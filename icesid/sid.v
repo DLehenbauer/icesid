@@ -6,7 +6,9 @@
 //          \/    \/        \/             \/
 `default_nettype none
 
-module sid (
+module sid#(
+    parameter POT_SUPPORT = 1          // Set to 0 to exclude ioPotX/Y support
+)(
     input  wire               clk,     // Master clock
     input  wire               clkEn,   // 1Mhz enable
     input  wire               iRst,    // sync. reset
@@ -126,19 +128,26 @@ module sid (
   wire [7:0] potX;
   wire [7:0] potY;
 
-  sid_pot potx (
-      .clk      (clk),
-      .clkEn    (clkEn),
-      .ioPotPad (ioPotX),
-      .oPotVal  (potX)
-  );
+  generate
+    if (POT_SUPPORT == 1) begin
+      sid_pot potx (
+          .clk      (clk),
+          .clkEn    (clkEn),
+          .ioPotPad (ioPotX),
+          .oPotVal  (potX)
+      );
 
-  sid_pot poty (
-      .clk      (clk),
-      .clkEn    (clkEn),
-      .ioPotPad (ioPotY),
-      .oPotVal  (potY)
-  );
+      sid_pot poty (
+          .clk      (clk),
+          .clkEn    (clkEn),
+          .ioPotPad (ioPotY),
+          .oPotVal  (potY)
+      );
+    end else begin
+        assign potX = '0;
+        assign potY = '0;
+    end
+  endgenerate
 `endif  // VERILATOR
 
   // convert to signed format
