@@ -7,15 +7,15 @@
 `default_nettype none
 
 module sid_voice (
-    input         clk,      // master clock
-    input         clkEn,    // asserted at 1Mhz
-    input         iRst,     // reset
-    input         iWE,      // data write
-    input  [ 4:0] iAddr,    // address bus
-    input  [ 7:0] iData,    // data bus
-    input         iExtMSB,  // external msb input
-    output        oMSB,     // msb out for ringmod and sync
-    output [11:0] oOut      // voice output
+    input  wire        clk,      // master clock
+    input  wire        clkEn,    // asserted at 1Mhz
+    input  wire        iRst,     // reset
+    input  wire        iWE,      // data write
+    input  wire [ 4:0] iAddr,    // address bus
+    input  wire [ 7:0] iData,    // data bus
+    input  wire        iExtMSB,  // external msb input
+    output wire        oMSB,     // msb out for ringmod and sync
+    output wire [11:0] oOut      // voice output
 );
 
   // tap from the phase acumulator to clock the noise LFSR
@@ -129,15 +129,15 @@ module sid_voice (
 endmodule
 
 module sid_voices (
-    input         clk,      // master clock
-    input         clkEn,    // asserted at 1Mhz
-    input         iRst,     // reset
-    input         iWE,      // data write
-    input  [ 4:0] iAddr,    // address bus
-    input  [ 7:0] iDataW,   // data bus
-    output [11:0] oVoice0,  // voice 0 output
-    output [11:0] oVoice1,  // voice 1 output
-    output [11:0] oVoice2   // voice 2 output
+    input  wire        clk,      // master clock
+    input  wire        clkEn,    // asserted at 1Mhz
+    input  wire        iRst,     // reset
+    input  wire        iWE,      // data write
+    input  wire [ 4:0] iAddr,    // address bus
+    input  wire [ 7:0] iDataW,   // data bus
+    output wire [11:0] oVoice0,  // voice 0 output
+    output wire [11:0] oVoice1,  // voice 1 output
+    output wire [11:0] oVoice2   // voice 2 output
 );
   // voice 0
   wire msb0;

@@ -7,18 +7,18 @@
 `default_nettype none
 
 module sid (
-    input                clk,     // Master clock
-    input                clkEn,   // 1Mhz enable
-    input                iRst,    // sync. reset
-    input                iWE,     // write enable
-    input         [ 4:0] iAddr,   // sid address
-    input         [ 7:0] iDataW,  // C64 to SID
-    output reg    [ 7:0] oDataR,  // SID to C64
-    output signed [15:0] oOut     // sid output
+    input  wire               clk,     // Master clock
+    input  wire               clkEn,   // 1Mhz enable
+    input  wire               iRst,    // sync. reset
+    input  wire               iWE,     // write enable
+    input  wire        [ 4:0] iAddr,   // sid address
+    input  wire        [ 7:0] iDataW,  // C64 to SID
+    output reg         [ 7:0] oDataR,  // SID to C64
+    output wire signed [15:0] oOut     // sid output
 `ifndef VERILATOR
     ,
-    inout                ioPotX,  // pot x pad
-    inout                ioPotY   // pot y pad
+    inout  wire               ioPotX,  // pot x pad
+    inout  wire               ioPotY   // pot y pad
 `endif  // VERILATOR
 );
 

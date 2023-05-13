@@ -7,10 +7,10 @@
 `default_nettype none
 
 module filter15khz (
-    input                clk,
-    input                clkEn,
-    input  signed [15:0] iIn,
-    output signed [15:0] oOut
+    input  wire               clk,
+    input  wire               clkEn,
+    input  wire signed [15:0] iIn,
+    output wire signed [15:0] oOut
 );
 
 `ifdef DISABLED
