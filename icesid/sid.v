@@ -299,7 +299,7 @@ module sid#(
   reg       reg3Off;       // Oscillator 3 disconnect
   reg       regIs6581;     // (non standard) select 6581 behaviour
   reg       regUseDacs;    // use non linear DAC model
-  always @(posedge clk) begin
+  always @(negedge clk) begin
     if (iWE) begin
       // keep track of the last write for read purposes
       regLastWrite <= iDataW;

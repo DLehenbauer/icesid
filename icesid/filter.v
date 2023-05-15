@@ -149,7 +149,7 @@ module filter (
   // address/data decoder
   reg [10:0] regFreq;  // 0 -> 8191 (0x1fff)
   reg [ 3:0] regRes;   // 0 -> 15   (0xf)
-  always @(posedge clk) begin
+  always @(negedge clk) begin
     if (iWE) begin
       case (iAddr)
         'h15: regFreq <= {regFreq[10:3], iData[2:0]};

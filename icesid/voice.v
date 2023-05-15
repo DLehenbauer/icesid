@@ -98,7 +98,7 @@ module sid_voice (
   end
 
   // address/data decoder
-  always @(posedge clk) begin
+  always @(negedge clk) begin
     if (iWE) begin
       case (iAddr)
         (BASE_ADDR + 'h0): begin
