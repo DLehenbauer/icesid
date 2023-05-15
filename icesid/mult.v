@@ -8,6 +8,33 @@
 
 /* verilator lint_off PINMISSING */
 
+module mult_s16xu16 (
+    input  wire signed [15:0] A,
+    input  wire        [15:0] B,
+    output reg  signed [31:0] O,
+    input  wire               CLK
+);
+  `ifdef ICE40
+    SB_MAC16 mac (
+        .A  (A),
+        .B  (B),
+        .O  (O),
+        .CLK(clk)
+    );
+
+    defparam mac.A_SIGNED = 1'b1;  // A is signed
+    defparam mac.B_SIGNED = 1'b0;  // B is unsigned
+    defparam mac.TOPOUTPUT_SELECT = 2'b11;  // Mult16x16 data output
+    defparam mac.BOTOUTPUT_SELECT = 2'b11;  // Mult16x16 data output
+  `else
+    wire signed [16:0] s17 = B;   // Extend U16 to S17
+
+    always @(posedge CLK) begin
+        O <= A * s17;             // S16 x U16 product
+    end
+  `endif
+endmodule
+
 // 16x16 multiplier for the filters
 module mult16x16 (
     input  wire               clk,
@@ -25,17 +52,12 @@ module mult16x16 (
       clipped
   );
 
-  SB_MAC16 mac (
-      .A  (clipped),
-      .B  (iCoef),
-      .O  (product),
+  mult_s16xu16 mac (
+      .A  (clipped),  // input is signed
+      .B  (iCoef),    // coefficient is unsigned
+      .O  (product),  // Mult16x16 data output
       .CLK(clk)
   );
-
-  defparam mac.A_SIGNED = 1'b1;  // input is signed
-  defparam mac.B_SIGNED = 1'b0;  // coefficient is unsigned
-  defparam mac.TOPOUTPUT_SELECT = 2'b11;  // Mult16x16 data output
-  defparam mac.BOTOUTPUT_SELECT = 2'b11;  // Mult16x16 data output
 endmodule
 
 // 16x4 multiplier used for master volume
@@ -47,17 +69,12 @@ module mdac16x4 (
 );
 
   wire signed [31:0] product;  // 16x16 product
-  SB_MAC16 mac (
-      .A  (iMix),
-      .B  ({12'b0, iVol}),
-      .O  (product),
+  mult_s16xu16 mac (
+      .A  (iMix),           // voice is signed
+      .B  ({12'b0, iVol}),  // env is unsigned
+      .O  (product),        // Mult16x16 data output
       .CLK(clk)
   );
-
-  defparam mac.A_SIGNED = 1'b1;  // voice is signed
-  defparam mac.B_SIGNED = 1'b0;  // env is unsigned
-  defparam mac.TOPOUTPUT_SELECT = 2'b11;  // Mult16x16 data output
-  defparam mac.BOTOUTPUT_SELECT = 2'b11;  // Mult16x16 data output
 
   reg [15:0] out;
   assign oOut = out;
@@ -75,17 +92,12 @@ module mdac12x8 (
 );
 
   wire signed [31:0] product;  // 16x16 product
-  SB_MAC16 mac (
-      .A  ({iVoice, 4'b0}),
-      .B  ({8'b0, iEnv}),
-      .O  (product),
+  mult_s16xu16 mac (
+      .A  ({iVoice, 4'b0}), // voice is signed
+      .B  ({8'b0, iEnv}),   // env is unsigned
+      .O  (product),        // Mult16x16 data output
       .CLK(clk)
   );
-
-  defparam mac.A_SIGNED = 1'b1;  // voice is signed
-  defparam mac.B_SIGNED = 1'b0;  // env is unsigned
-  defparam mac.TOPOUTPUT_SELECT = 2'b11;  // Mult16x16 data output
-  defparam mac.BOTOUTPUT_SELECT = 2'b11;  // Mult16x16 data output
 
   reg [15:0] out;
   assign oOut = out;
