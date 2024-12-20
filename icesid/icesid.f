@@ -1,4 +1,5 @@
 clip.v
+dac.v
 env.v
 filter.v
 mult.v
