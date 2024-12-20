@@ -43,8 +43,7 @@ module filter (
   reg [15:0] fCurve[2048];
   initial begin
     // load in the coefficient table
-    //$readmemh("../commodore-pet-clone/rtl/external/icesid/icesid/curve_6581.hex", fCurve);
-    $readmemh("../../external/icesid/icesid/curve_6581.hex", fCurve);
+    $readmemh("./external/icesid/icesid/curve_6581.hex", fCurve);
   end
 
   // filter coefficient is calculated as follows:
