@@ -209,6 +209,7 @@ module sid#(
   filter sid_filter (
       .clk   (clk),
       .clkEn (clkEn),
+      .iRst  (iRst),
       .iIn   (preFilter),
       .iWE   (iWE),
       .iAddr (iAddr),
@@ -300,7 +301,14 @@ module sid#(
   reg       regIs6581;     // (non standard) select 6581 behaviour
   reg       regUseDacs;    // use non linear DAC model
   always @(negedge clk) begin
-    if (iWE) begin
+    if (iRst) begin
+      // reset registers to default values
+      regFilt      <= 0;
+      reg3Off      <= 0;
+      regMode      <= 0;
+      regVolume    <= 4'hf;
+      regLastWrite <= 0;
+    end else if (iWE) begin
       // keep track of the last write for read purposes
       regLastWrite <= iDataW;
       case (iAddr)

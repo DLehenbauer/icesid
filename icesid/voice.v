@@ -99,7 +99,17 @@ module sid_voice (
 
   // address/data decoder
   always @(negedge clk) begin
-    if (iWE) begin
+    if (iRst) begin
+      regFreq    <= '0;
+      regPW      <= '0;
+      regNoise   <= '0;
+      regPulse   <= '0;
+      regSaw     <= '0;
+      regTri     <= '0;
+      regTest    <= '0;
+      regRingMod <= '0;
+      regSync    <= '0;
+    end else if (iWE) begin
       case (iAddr)
         (BASE_ADDR + 'h0): begin
           regFreq <= {regFreq[15:8], iData[7:0]};

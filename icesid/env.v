@@ -210,7 +210,13 @@ module sid_env (
 
   // address/data decoder
   always @(negedge clk) begin
-    if (iWE) begin
+    if (iRst) begin
+      regGate <= '0;
+      regAtt  <= '0;
+      regDec  <= '0;
+      regSus  <= '0;
+      regRel  <= '0;
+    end else if (iWE) begin
       case (iAddr)
         (BASE_ADDR + 'h4): begin
           regGate <= iData[0];
