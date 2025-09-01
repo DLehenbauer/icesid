@@ -27,7 +27,9 @@ module mult_s16xu16 (
     defparam mac.TOPOUTPUT_SELECT = 2'b11;  // Mult16x16 data output
     defparam mac.BOTOUTPUT_SELECT = 2'b11;  // Mult16x16 data output
   `else
-    wire signed [16:0] s17 = B;   // Extend U16 to S17
+    // Extend U16 to S17 to ensure 'B' will be interpreted as a positive
+    // value in the following multiplication.
+    wire signed [16:0] s17 = {1'b0, B};
 
     always @(posedge CLK) begin
         O <= A * s17;             // S16 x U16 product
