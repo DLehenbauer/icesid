@@ -77,9 +77,13 @@ module sid_voice (
   reg [11:0] wavPulse = 12'd0;
   reg [11:0] wavTri   = 12'd0;
   reg [11:0] wavNoise = 12'd0;
+  reg [11:0] regPWPos = 12'd0;
   always @(posedge clk) begin
+    // Shadow regPW onto this edge: comparing the negedge register directly
+    // leaves the 12-bit compare on a half-cycle negedge-to-posedge path.
+    regPWPos <= regPW;
     wavSaw   <= phase[23:12];
-    wavPulse <= (phase[23:12] <= regPW) ? 12'h000 : 12'hfff;
+    wavPulse <= (phase[23:12] <= regPWPos) ? 12'h000 : 12'hfff;
     wavTri   <= ((phase[23] ^ (regRingMod & iExtMSB)) ? ~phase[22:11] : phase[22:11]);
     wavNoise <= {lfsr[20], lfsr[18], lfsr[14], lfsr[11], lfsr[9], lfsr[5], lfsr[2], lfsr[0], 4'b0};
   end
