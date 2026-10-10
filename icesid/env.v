@@ -24,6 +24,7 @@ module sid_env_imp (
   localparam STAGE_ATT     = 1;
   localparam STAGE_DEC_SUS = 2;
   localparam STAGE_REL     = 4;
+  localparam [7:0] RESET_ENV = 8'haa;
   reg [2:0] stage;
 
   wire [7:0] sustainVal = {iSus, iSus};
@@ -122,9 +123,36 @@ module sid_env_imp (
     end
   end
 
+  // Keep the update decision out of the carry/borrow prefix computation.
+  wire envInc = stage[0] && iGate && (env != 8'hff) && cntRst;
+  wire envDec = !stage[0] && divRst && (env != 0) &&
+      ((stage[1] && iGate && (env != sustainVal)) ||
+       (!stage[1] && stage[2] && !iGate));
+
+  genvar bitIndex;
+  generate
+    for (bitIndex = 0; bitIndex < 8; bitIndex = bitIndex + 1) begin : env_bits
+      wire carry;
+      wire borrow;
+      if (bitIndex == 0) begin : low_bit
+        assign carry = 1'b1;
+        assign borrow = 1'b1;
+      end else begin : upper_bit
+        assign carry = &env[bitIndex-1:0];
+        assign borrow = ~|env[bitIndex-1:0];
+      end
+      always @(posedge clk) begin
+        if (iRst) begin
+          env[bitIndex] <= RESET_ENV[bitIndex];
+        end else begin
+          env[bitIndex] <= env[bitIndex] ^ ((envInc && carry) || (envDec && borrow));
+        end
+      end
+    end
+  endgenerate
+
   always @(posedge clk) begin
     if (iRst) begin
-      env   <= 8'haa;
       stage <= STAGE_REL;
     end else begin
       case (1'b1)
@@ -132,35 +160,19 @@ module sid_env_imp (
           if (iGate) begin
             if (env == 8'hff) begin
               stage <= STAGE_DEC_SUS;
-            end else begin
-              if (cntRst) begin
-                env <= env + 1;
-              end
             end
           end else begin
             stage <= STAGE_REL;
           end
         end
         stage[1]: begin  // dec/sus
-          if (iGate) begin
-            if (divRst) begin
-              if (env == sustainVal) begin
-                // sustain so do nothing
-              end else begin
-                env <= (env == 0) ? 0 : (env - 1);
-              end
-            end
-          end else begin
+          if (!iGate) begin
             stage <= STAGE_REL;
           end
         end
         stage[2]: begin  // rel
           if (iGate) begin
             stage <= STAGE_ATT;
-          end else begin
-            if (divRst) begin
-              env <= (env == 0) ? 0 : (env - 1);
-            end
           end
         end
         default: stage <= STAGE_REL;
