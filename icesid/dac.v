@@ -7,11 +7,11 @@
 `default_nettype none
 
 module sid_dac8(
-  input            clk,
-  input            iRst,
-  input      [7:0] iIn,
-  input            iStart,
-  output reg [7:0] oOut);
+  input  wire       clk,
+  input  wire       iRst,
+  input  wire [7:0] iIn,
+  input  wire       iStart,
+  output reg  [7:0] oOut);
 
   reg [ 2:0] count = 0;
   reg [ 7:0] data  = 0;

@@ -7,15 +7,15 @@
 `default_nettype none
 
 module sid_env_imp (
-    input        clk,
-    input        clkEn,
-    input        iRst,
-    input        iGate,
-    input  [3:0] iAtt,
-    input  [3:0] iDec,
-    input  [3:0] iSus,
-    input  [3:0] iRel,
-    output [7:0] oOut
+    input  wire       clk,
+    input  wire       clkEn,
+    input  wire       iRst,
+    input  wire       iGate,
+    input  wire [3:0] iAtt,
+    input  wire [3:0] iDec,
+    input  wire [3:0] iSus,
+    input  wire [3:0] iRel,
+    output wire [7:0] oOut
 );
 
   reg [7:0] env;  // envelope output value
@@ -170,13 +170,13 @@ module sid_env_imp (
 endmodule
 
 module sid_env (
-    input        clk,    // master clock
-    input        clkEn,  // asserted at 1Mhz
-    input        iRst,   // reset
-    input        iWE,    // write enable
-    input  [4:0] iAddr,  // address bus
-    input  [7:0] iData,  // data bus
-    output [7:0] oOut
+    input  wire       clk,    // master clock
+    input  wire       clkEn,  // asserted at 1Mhz
+    input  wire       iRst,   // reset
+    input  wire       iWE,    // write enable
+    input  wire [4:0] iAddr,  // address bus
+    input  wire [7:0] iData,  // data bus
+    output wire [7:0] oOut
 );
 
   // register base address

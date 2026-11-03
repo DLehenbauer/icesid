@@ -7,8 +7,8 @@
 `default_nettype none
 
 module clipper (
-    input  signed [16:0] iIn,
-    output signed [15:0] oOut
+    input  wire signed [16:0] iIn,
+    output wire signed [15:0] oOut
 );
   /* verilog_format: off */
   assign oOut =

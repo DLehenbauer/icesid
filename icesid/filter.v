@@ -9,16 +9,16 @@
 /* verilator lint_off WIDTH */
 
 module filter (
-    input                clk,     // system clock
-    input                clkEn,   // clock enable
-    input  signed [15:0] iIn,     // filter input
-    input                iWE,     // data write
-    input         [ 4:0] iAddr,   // address bus
-    input         [ 7:0] iData,   // data bus
-    input                i6581,   // use filter curve lookup table
-    output signed [15:0] oLP,     // lowpass output
-    output signed [15:0] oBP,     // bandpass output
-    output signed [15:0] oHP      // highpass output
+    input  wire               clk,     // system clock
+    input  wire               clkEn,   // clock enable
+    input  wire signed [15:0] iIn,     // filter input
+    input  wire               iWE,     // data write
+    input  wire        [ 4:0] iAddr,   // address bus
+    input  wire        [ 7:0] iData,   // data bus
+    input  wire               i6581,   // use filter curve lookup table
+    output wire signed [15:0] oLP,     // lowpass output
+    output wire signed [15:0] oBP,     // bandpass output
+    output wire signed [15:0] oHP      // highpass output
 );
 
   reg signed [16:0] low;
