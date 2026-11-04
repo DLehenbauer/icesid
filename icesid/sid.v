@@ -7,7 +7,8 @@
 `default_nettype none
 
 module sid #(
-    parameter POT_SUPPORT = 1
+    parameter POT_SUPPORT = 1,
+    parameter CURVE_6581_FILE = "curve_6581.hex"
 ) (
     input  wire               clk,     // Master clock
     input  wire               clkEn,   // 1Mhz enable
@@ -208,7 +209,9 @@ module sid #(
   wire signed [15:0] sidFilterLP;
   wire signed [15:0] sidFilterBP;
   wire signed [15:0] sidFilterHP;
-  filter sid_filter (
+  filter #(
+      .CURVE_6581_FILE(CURVE_6581_FILE)
+  ) sid_filter (
       .clk   (clk),
       .clkEn (clkEn),
       .iIn   (preFilter),

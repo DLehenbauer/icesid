@@ -8,7 +8,9 @@
 
 /* verilator lint_off WIDTH */
 
-module filter (
+module filter #(
+    parameter CURVE_6581_FILE = "curve_6581.hex"
+) (
     input  wire               clk,     // system clock
     input  wire               clkEn,   // clock enable
     input  wire signed [15:0] iIn,     // filter input
@@ -43,7 +45,7 @@ module filter (
   reg [15:0] fCurve[2048];
   initial begin
     // load in the coefficient table
-    $readmemh("curve_6581.hex", fCurve);
+    $readmemh(CURVE_6581_FILE, fCurve);
   end
 
   // filter coefficient is calculated as follows:
