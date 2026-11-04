@@ -52,7 +52,6 @@ module sid_voice (
         end else begin
           phase <= phase + {8'd0, regFreq};
         end
-        noiseClkLag <= phase[noiseClkBit];
         extMSBLag   <= iExtMSB;
       end
     end
