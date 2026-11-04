@@ -92,7 +92,7 @@ module sid_env_imp (
   reg cntRst;
   always @(posedge clk) begin
     cntRst <= 0;
-    if (clkEn) begin
+    if (!iRst && clkEn) begin
       if (cnt == 0) begin
         cntRst <= 1;
         cnt <= cntMax;
@@ -124,7 +124,6 @@ module sid_env_imp (
 
   always @(posedge clk) begin
     if (iRst) begin
-      env   <= 8'haa;
       stage <= STAGE_REL;
     end else begin
       case (1'b1)
@@ -210,7 +209,13 @@ module sid_env (
 
   // address/data decoder
   always @(posedge clk) begin
-    if (iWE) begin
+    if (iRst) begin
+      regGate <= 0;
+      regAtt  <= 0;
+      regDec  <= 0;
+      regSus  <= 0;
+      regRel  <= 0;
+    end else if (iWE) begin
       case (iAddr)
         (BASE_ADDR + 'h4): begin
           regGate <= iData[0];

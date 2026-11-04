@@ -8,7 +8,6 @@
 
 module sid_dac8(
   input  wire       clk,
-  input  wire       iRst,
   input  wire [7:0] iIn,
   input  wire       iStart,
   output reg  [7:0] oOut);

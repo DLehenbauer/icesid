@@ -43,7 +43,7 @@ module sid_voice (
   reg [23:0] phase = 24'h555555;
   always @(posedge clk) begin
     if (iRst) begin
-      phase <= 0;
+      extMSBLag <= 0;
     end else begin
       if (clkEn) begin
         if (regTest || regSync && !iExtMSB && extMSBLag) begin
@@ -58,11 +58,14 @@ module sid_voice (
   end
 
   // noise generator (23bit LFSR)
-  // todo: noise lockup, handle reset
   reg [22:0] lfsr = 23'h7fffff;
   reg noiseClkLag = 0;
   always @(posedge clk) begin
-    if (clkEn) begin
+    if (iRst) begin
+      // Equivalent to resetting the shift register, then advancing it once with test active.
+      lfsr <= 23'h7ffffe;
+      noiseClkLag <= phase[noiseClkBit];
+    end else if (clkEn) begin
       // update noise when bit 19 goes high
       noiseClkLag <= phase[noiseClkBit];
       if (phase[noiseClkBit] && !noiseClkLag) begin
@@ -99,7 +102,17 @@ module sid_voice (
 
   // address/data decoder
   always @(posedge clk) begin
-    if (iWE) begin
+    if (iRst) begin
+      regFreq    <= 0;
+      regPW      <= 0;
+      regNoise   <= 0;
+      regPulse   <= 0;
+      regSaw     <= 0;
+      regTri     <= 0;
+      regTest    <= 0;
+      regRingMod <= 0;
+      regSync    <= 0;
+    end else if (iWE) begin
       case (iAddr)
         (BASE_ADDR + 'h0): begin
           regFreq <= {regFreq[15:8], iData[7:0]};

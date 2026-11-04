@@ -100,7 +100,6 @@ module sid #(
   wire [7:0] envOut0Dac;
   sid_dac8 dac8_0 (
       .clk   (clk),
-      .iRst  (iRst),
       .iIn   (envOut0),
       .iStart(clkEn),
       .oOut  (envOut0Dac)
@@ -109,7 +108,6 @@ module sid #(
   wire [7:0] envOut1Dac;
   sid_dac8 dac8_1 (
       .clk   (clk),
-      .iRst  (iRst),
       .iIn   (envOut1),
       .iStart(clkEn),
       .oOut  (envOut1Dac)
@@ -118,7 +116,6 @@ module sid #(
   wire [7:0] envOut2Dac;
   sid_dac8 dac8_2 (
       .clk   (clk),
-      .iRst  (iRst),
       .iIn   (envOut2),
       .iStart(clkEn),
       .oOut  (envOut2Dac)
@@ -214,6 +211,7 @@ module sid #(
   ) sid_filter (
       .clk   (clk),
       .clkEn (clkEn),
+      .iRst  (iRst),
       .iIn   (preFilter),
       .iWE   (iWE),
       .iAddr (iAddr),
@@ -305,7 +303,13 @@ module sid #(
   reg       regIs6581;     // (non standard) select 6581 behaviour
   reg       regUseDacs;    // use non linear DAC model
   always @(posedge clk) begin
-    if (iWE) begin
+    if (iRst) begin
+      regFilt      <= 0;
+      regMode      <= 0;
+      regVolume    <= 0;
+      regLastWrite <= 0;
+      reg3Off      <= 0;
+    end else if (iWE) begin
       // keep track of the last write for read purposes
       regLastWrite <= iDataW;
       case (iAddr)

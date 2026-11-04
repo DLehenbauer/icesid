@@ -13,6 +13,7 @@ module filter #(
 ) (
     input  wire               clk,     // system clock
     input  wire               clkEn,   // clock enable
+    input  wire               iRst,    // reset
     input  wire signed [15:0] iIn,     // filter input
     input  wire               iWE,     // data write
     input  wire        [ 4:0] iAddr,   // address bus
@@ -152,7 +153,10 @@ module filter #(
   reg [10:0] regFreq;  // 0 -> 8191 (0x1fff)
   reg [ 3:0] regRes;   // 0 -> 15   (0xf)
   always @(posedge clk) begin
-    if (iWE) begin
+    if (iRst) begin
+      regFreq <= 0;
+      regRes <= 0;
+    end else if (iWE) begin
       case (iAddr)
         'h15: regFreq <= {regFreq[10:3], iData[2:0]};
         'h16: regFreq <= {iData[7:0], regFreq[2:0]};
